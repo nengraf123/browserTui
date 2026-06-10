@@ -3,6 +3,7 @@
 #define $sss printf("\n");
 #define ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА printf("\033[H");
 #define ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_СТРОЧКИ printf("\033[G");
+#define KEY(ch) (n == 1 && input_buf[0] == (ch))
 
 void terminal_size(int &width, int &height) {
     struct winsize w;
@@ -50,49 +51,38 @@ int APP::browserInTerminal() {
 
   bool tab_active = false;
   while (1) {
-  ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
-  ПРОСЧИТЫВАЕМ_РАЗМЕР_ТЕРМИНАЛА
-
-  // char input_buf[3] = {0};
-  // int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
-  // if (n == 2 && input_buf[0] == '\033' && input_buf[1] == 't') {
-  //     tab_active = !tab_active; // переключаем состояние по Alt+T
-  // }
-
-  monitor_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ;
-  monitor.assign(monitor_size, ' ');
-
-  std::cout << "\033[48;2;0;0;175m" << monitor << "\033[0m" << std::flush;
-
-  ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
-  double percent_width_tab = percent(15, WIDTH_TERMINAL);
-  std::string width_tab(percent_width_tab, '0');
-  #define m_ "\033[4m"
-  #define mx "\u2717"
-  // std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
-  // std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
-  // if (tab_active) {
-  //   std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
-  // } else {
-  //   std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
-  // }
-  //отладчик клавишь, дает показ что за код клавиши нажат
-  char input_buf[8] = {0};
-  int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
-  if (n > 0) {
-      for (int i = 0; i < n; ++i) {
-          printf("[%d] ", (unsigned char)input_buf[i]);
-      }
-      printf("\n");
-  }
+    // для клавиш
+    char input_buf[3] = {0}; int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
+    ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
+    ПРОСЧИТЫВАЕМ_РАЗМЕР_ТЕРМИНАЛА
 
 
+    monitor_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ;
+    monitor.assign(monitor_size, ' ');
 
+    std::cout << "\033[48;2;0;0;175m" << monitor << "\033[0m" << std::flush;
 
-  monitor.clear();
-    usleep(16666);
+    ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
+    double percent_width_tab = percent(15, WIDTH_TERMINAL);
+    std::string width_tab(percent_width_tab, '0');
+    #define m_ "\033[4m"
+    #define mx "\u2717"
+    if (KEY('\n')) {
+      // действие на Enter
+      std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
+    }
+
+    monitor.clear();
+    usleep(1000000 / 30);
   };
   keyboard(false);
 };
 // screen = screen + "\033[38;2;0;180;210;48;2;0;18;210m \033[0m";
 // fflush(stdout);
+// std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
+// std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
+// if (tab_active) {
+//   std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
+// } else {
+//   std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
+// }
