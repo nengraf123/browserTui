@@ -1,5 +1,4 @@
 #include "APP.h"
-#include <stdexcept>
 
 #define $sss printf("\n");
 #define ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА printf("\033[H");
@@ -12,6 +11,15 @@
 #define KEY_ALT(ch) (n == 2 && input_buf[0] == '\33' && input_buf[1] == (ch))
 // 4. Ctrl + Буква (Один байт. Формула превращает 't' или 'T' в код Ctrl-сочетания)
 #define KEY_CTRL(ch) (n == 1 && input_buf[0] == ((ch) & 0x1F))
+// 1. Стрелка ВВЕРХ (Escape + '[' + 'A')
+#define KEY_UP    (n == 3 && input_buf[0] == '\33' && input_buf[1] == '[' && input_buf[2] == 'A')
+// 2. Стрелка ВНИЗ (Escape + '[' + 'B')
+#define KEY_DOWN  (n == 3 && input_buf[0] == '\33' && input_buf[1] == '[' && input_buf[2] == 'B')
+// 3. Стрелка ВПРАВО (Escape + '[' + 'C')
+#define KEY_RIGHT (n == 3 && input_buf[0] == '\33' && input_buf[1] == '[' && input_buf[2] == 'C')
+// 4. Стрелка ВЛЕВО (Escape + '[' + 'D')
+#define KEY_LEFT  (n == 3 && input_buf[0] == '\33' && input_buf[1] == '[' && input_buf[2] == 'D')
+
 
 #define КУРСОР_ВПРАВО(n)   std::cout << "\033[" << n << "C" << std::flush
 #define КУРСОР_ВЛЕВО(n)    std::cout << "\033[" << n << "D" << std::flush
@@ -62,65 +70,75 @@ int APP::browserInTerminal() {
   int HEIGHT_TERMINAL;
   int monitor_size;
   std::string monitor;
+
   struct Tab {
-    int id;
+    // int id;
     std::string title = "Новая вкладка"; // Значение по умолчанию
-    std::string url;
+    std::string url = "";
     bool is_active;
-    bool is_pinned;
     bool is_loading;
-    bool is_muted;
   };
-  int tab_count = 1;
-  int tab_focus = tab_count;
+  // int tab_focus = tab_count;
+  std::vector<Tab> tabs;
+  tabs.push_back({"Новая вкладка", "lite.duckduckgo.com", true, false});
 
   bool tab_active = false;
   while (1) {
-    // для клавиш
-    char input_buf[3] = {0}; int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
-    ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
+    // хуйня
+    char input_buf[3] = {0}; int n = read(STDIN_FILENO, input_buf, sizeof(input_buf)); // для клавиш
+    КУРСОР_НА(1, 1);
     ПРОСЧИТЫВАЕМ_РАЗМЕР_ТЕРМИНАЛА
-
-    // считаем размер экрана и подставляем туда пробелы
-    monitor_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ;
-    monitor.assign(monitor_size, ' ');
-
+    // считаем размер экрана                            // подставляем туда пробелы
+    monitor_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ; monitor.assign(monitor_size, ' ');
+    // заливаем фон
     std::cout << "\033[48;2;0;0;175m" << monitor << "\033[0m" << std::flush;
 
-    ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
-    // считаем ширину таба
-    auto size_width_tab = [&]() -> int {
-        int available = (int)(percent(90, WIDTH_TERMINAL)); // 90% ширины на все табы
-        int tab_width = available / tab_count;              // делим поровну
-        int max_tab_width = (int)percent(15, WIDTH_TERMINAL); // максимум одного таба
-        return std::min(tab_width, max_tab_width);          // берём меньшее
-    };
-    // ложим туда символы
-    std::string width_tab(size_width_tab(), '0');
-
+    // находим активный элемент
+    int active_i = 0; for (int i = 0; i < (int)tabs.size(); i++) {if (tabs[i].is_active) {active_i = i; break;}} 
+    КУРСОР_НА(1, 1);
 
     if (KEY('t')) {
-      tab_count++;
-      tab_focus = tab_count;
+      for (int i = 0; i < (int)tabs.size(); i++) {
+        if (tabs[i].is_active) {
+          tabs[i].is_active = false;
+          break;
+        }
+      }
+      tabs.push_back({"Новая вкладка","lite.duckduckgo.com", true, false});
     }
-    if (KEY('w') && tab_count > 1) {
-    tab_count--;
-    if (tab_focus >= tab_count) tab_focus = tab_count; // не выходим за границу
-    }
-    for (int i = 1; i < tab_count+1; i++) {
-      if (i == tab_focus) {
-        // Активная вкладка — белая
-        std::cout << "\033[4m\033[48;2;205;205;205m\033[30m" << width_tab << "\u2717\033[0m" << std::flush;
-      } else {
-        // Неактивная вкладка — чёрная
-        std::cout << "\033[4m\033[48;2;50;50;50m\033[38;2;255;255;255m" << width_tab << "\u2717\033[0m" << std::flush;
+    if (KEY('w') && tabs.size() > 1) {
+      // проходимся по индексам и ищем активный а потом убиваем (хз нахуя тут break но без него не работает почему то)
+      for (int i = 0; i < (int)tabs.size(); i++) {
+        if (tabs[i].is_active) {
+          tabs.erase(tabs.begin() + i);
+          // после erase активируем предыдущий, или первый если удалили нулевой
+          int new_active = (i > 0) ? i - 1 : 0;
+          tabs[new_active].is_active = true;
+          break;
+        }
       }
     }
+    if (KEY_LEFT && active_i > 0) {
+        tabs[active_i].is_active = false;
+        tabs[active_i - 1].is_active = true;
+    }
+    if (KEY_RIGHT && active_i < (int)tabs.size() - 1) {
+        tabs[active_i].is_active = false;
+        tabs[active_i + 1].is_active = true;
+    }
 
-    КУРСОР_НА(HEIGHT_TERMINAL, 1);
-    std::cout << size_width_tab() << std::flush;
 
-    monitor.clear();
+    for (int i=0;i<tabs.size();i++) {
+      if (tabs[i].is_active) {
+        std::cout << "\033[4m\033[48;2;205;205;205m\033[30m" << tabs[i].title << "\033[0m" << std::flush;
+      } else {
+        std::cout << "\033[4m" << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << tabs[i].title << "\033[0m" << "\033[0m" << std::flush;
+      }
+    }
+    КУРСОР_НА(2, 1);
+    // monitor.assign(monitor_size, ' ');
+    std::cout << "\033[48;2;0;0;0m" << "" << "\033[0m" << std::flush;
+
     usleep(1000000 / 30);
   };
   keyboard(false);
@@ -137,3 +155,38 @@ int APP::browserInTerminal() {
 // } else {
 //   std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
 // }
+// ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
+// // считаем ширину таба
+// auto size_width_tab = [&]() -> int {
+//   int available = (int)(percent(90, WIDTH_TERMINAL)); // 90% ширины на все табы
+//   int tab_width = available / tab_count;              // делим поровну
+//   int max_tab_width = (int)percent(15, WIDTH_TERMINAL); // максимум одного таба
+//   return std::min(tab_width, max_tab_width);          // берём меньшее
+// };
+// // ложим туда символы
+// std::string width_tab(size_width_tab(), '0');
+//
+//
+// if (KEY('t')) {
+//   tab_count++;
+//   tab_focus = tab_count;
+// }
+// if (KEY('w') && tab_count > 1) {
+//   tab_count--;
+//   if (tab_focus >= tab_count) tab_focus = tab_count; // не выходим за границу
+// }
+// for (int i = 1; i < tab_count+1; i++) {
+//   if (i == tab_focus) {
+//     // Активная вкладка — белая
+//     std::cout << "\033[4m\033[48;2;205;205;205m\033[30m" << width_tab << "\u2717\033[0m" << std::flush;
+//   } else {
+//     // Неактивная вкладка — чёрная
+//     std::cout << "\033[4m\033[48;2;50;50;50m\033[38;2;255;255;255m" << width_tab << "\u2717\033[0m" << std::flush;
+//   }
+// }
+//
+// КУРСОР_НА(HEIGHT_TERMINAL, 1);
+// std::cout << size_width_tab() << std::flush;
+//
+// monitor.clear();
+// usleep(1000000 / 30);
