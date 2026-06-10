@@ -1,3 +1,4 @@
+// APP.h
 #pragma once 
 
 #include <stdio.h>
@@ -17,6 +18,12 @@
 #include <csignal> // Добавляем для работы с сигналами
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <ostream>
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <csignal>
+#include <cstdlib>
 
 
 
@@ -24,6 +31,7 @@
 
 
 
+void keyboard(bool enable);
 class APP {
   public:
     int browserInTerminal();
