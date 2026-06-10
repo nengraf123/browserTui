@@ -62,6 +62,15 @@ int APP::browserInTerminal() {
   int HEIGHT_TERMINAL;
   int monitor_size;
   std::string monitor;
+  struct Tab {
+    int id;
+    std::string title = "Новая вкладка"; // Значение по умолчанию
+    std::string url;
+    bool is_active;
+    bool is_pinned;
+    bool is_loading;
+    bool is_muted;
+  };
   int tab_count = 1;
   int tab_focus = tab_count;
 
