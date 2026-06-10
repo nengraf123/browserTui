@@ -49,7 +49,9 @@ int APP::browserInTerminal() {
   ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
   double percent_width_tab = percent(15, WIDTH_TERMINAL);
   std::string width_tab(percent_width_tab, ' ');
-  std::cout << "\033[4m" << "\033[48;2;111;111;111m" << "\033[30m" << width_tab << "\u2717" << "\033[0m" << std::flush;
+  // std::cout << "\033[4m" << "\033[48;2;111;111;111m" << "\033[30m" << width_tab << "\u2717" << "\033[0m" << std::flush;
+  std::cout << "\033[4m" << "\033[48;2;111;111;111m" << "\033[38;2;144;144;144m" << width_tab << "\u2717" << "\033[0m" << std::flush;
+
 
   monitor.clear();
     usleep(16666);
