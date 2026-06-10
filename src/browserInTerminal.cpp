@@ -1,4 +1,5 @@
 #include "APP.h"
+#include <ostream>
 
 #define $sss printf("\n");
 #define ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА printf("\033[H");
@@ -12,6 +13,10 @@ void terminal_size(int &width, int &height) {
     }
 }
 #define ПРОСЧИТЫВАЕМ_РАЗМЕР_ТЕРМИНАЛА terminal_size(WIDTH_TERMINAL, HEIGHT_TERMINAL);
+
+template <typename T>
+double percent(T percent, T total) {return (static_cast<double>(total) * percent) / 100.0;}
+
 
 
 // мне нужно не по символьно делать холст а делать все в памяти а потом просто вывести это
@@ -27,23 +32,26 @@ std::string RED_BG = "\033[48;2;255;0;0m";
 int APP::browserInTerminal() {
   int WIDTH_TERMINAL;
   int HEIGHT_TERMINAL;
-  // std::string screen = "";
+  int monitor_size;
+  std::string monitor;
 
-
-
-
-
-
+  // 1. СКРЫВАЕМ КУРСОР ПЕРЕД ЦИКЛОМ
+  std::cout << "\033[?25l" << std::flush;
   while (1) {
   ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
   ПРОСЧИТЫВАЕМ_РАЗМЕР_ТЕРМИНАЛА
 
-  int screen_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ;
-  std::string screen(screen_size, ' ');
+  monitor_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ;
+  monitor.assign(monitor_size, ' ');
 
-  std::cout << "\033[48;2;0;0;175m" << screen << "\033[0m" << std::flush;
+  std::cout << "\033[48;2;0;0;175m" << monitor << "\033[0m" << std::flush;
 
-  screen = "";
+  ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
+  double percent_width_tab = percent(15, WIDTH_TERMINAL);
+  std::string width_tab(percent_width_tab, ' ');
+  std::cout << "\033[4m" << "\033[48;2;111;111;111m" << "\033[30m" << width_tab << "\u2717" << "\033[0m" << std::flush;
+
+  monitor.clear();
     usleep(16666);
   };
 };

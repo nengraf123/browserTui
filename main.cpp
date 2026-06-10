@@ -4,6 +4,7 @@ int main(){
     APP app;
     
     app.browserInTerminal();
+    // app.AI();
 
     return 0;
 }

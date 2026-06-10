@@ -27,6 +27,7 @@
 class APP {
   public:
     int browserInTerminal();
+    void AI();
   private:
     #define p printf
     #define dbl double
