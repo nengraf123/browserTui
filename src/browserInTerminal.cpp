@@ -18,6 +18,7 @@ struct termios orig_termios;
 template <typename T>
 double percent(T percent, T total) {return (static_cast<double>(total) * percent) / 100.0;}
 
+// обработчик на нормальный выход
 void signalHandler(int signum) {
     keyboard(false);
     std::cout << "\033[?25h" << std::flush;
@@ -51,11 +52,12 @@ int APP::browserInTerminal() {
   while (1) {
   ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
   ПРОСЧИТЫВАЕМ_РАЗМЕР_ТЕРМИНАЛА
-  char input_buf[3] = {0};
-  int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
-  if (n == 2 && input_buf[0] == '\033' && input_buf[1] == 't') {
-      tab_active = !tab_active; // переключаем состояние по Alt+T
-  }
+
+  // char input_buf[3] = {0};
+  // int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
+  // if (n == 2 && input_buf[0] == '\033' && input_buf[1] == 't') {
+  //     tab_active = !tab_active; // переключаем состояние по Alt+T
+  // }
 
   monitor_size = (HEIGHT_TERMINAL * WIDTH_TERMINAL) ;
   monitor.assign(monitor_size, ' ');
@@ -69,10 +71,19 @@ int APP::browserInTerminal() {
   #define mx "\u2717"
   // std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
   // std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
-  if (tab_active) {
-    std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
-  } else {
-    std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
+  // if (tab_active) {
+  //   std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
+  // } else {
+  //   std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
+  // }
+  //отладчик клавишь, дает показ что за код клавиши нажат
+  char input_buf[8] = {0};
+  int n = read(STDIN_FILENO, input_buf, sizeof(input_buf));
+  if (n > 0) {
+      for (int i = 0; i < n; ++i) {
+          printf("[%d] ", (unsigned char)input_buf[i]);
+      }
+      printf("\n");
   }
 
 
