@@ -30,6 +30,7 @@
 
 class APP {
   public:
+    APP();
     void keyboard(bool enable);
     // void signalHandler(int signum);
     void logica();
@@ -51,8 +52,14 @@ class APP {
     std::string monitor_L();
     std::string page_L();
     void monitor_draw();
+    void tab_draw();
     void page_draw();
+
 };
+
+// APP::APP() {
+//   tabs.push_back({"duck duck go", "lite.duckduckgo.com", true, false});
+// };
 
 extern APP* g_app_instance;
 void signalHandler(int signum);

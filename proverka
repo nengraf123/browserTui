@@ -1,3 +1,4 @@
 #!/bin/bash
 # pidof app
 htop -p $(pidof app firefox | tr ' ' ',')
+# watch -n1 'ps -o %cpu,%mem,rss --no-headers -p $(pgrep -f firefox | tr "\n" "," | sed "s/,$//") | awk "{c+=\$1;m+=\$2;r+=\$3} END{printf \"firefox CPU:%.1f%% MEM:%.1f%% RSS:%dMB\n\",c,m,r/1024}"'

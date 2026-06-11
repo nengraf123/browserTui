@@ -1,5 +1,9 @@
 #include "APP.h"
 
+APP::APP() {
+  tabs.push_back({"duck duck go", "lite.duckduckgo.com", true, false});
+};
+
 void APP::logica() {
   std::signal(SIGINT, signalHandler); // обработчик на нормальный выход
   WIDTH_TERMINAL=terminal_size_WIDTH();
@@ -14,7 +18,7 @@ std::string APP::monitor_L(){
   return monitor;
 };
 std::string APP::page_L(){
-  int page_size = ((HEIGHT_TERMINAL-2) * WIDTH_TERMINAL); 
+  int page_size = ((HEIGHT_TERMINAL-1) * WIDTH_TERMINAL); 
   std::string page(page_size, ' ');
   return page;
 };
@@ -72,9 +76,23 @@ void signalHandler(int signum) {
 void APP::monitor_draw() {
   std::cout << "\033[H"; // перенести курсор в верхний левый угол
   std::cout << "\033[48;2;0;0;175m" << monitor << "\033[0m" << std::flush; monitor.clear();
-  std::cout << "\033[48;2;111;111;111m" << page << "\033[0m" << std::flush; page.clear();
 };
+
+void APP::tab_draw() {
+  CURSOR_TO(1, 1);
+  // рисуем вкладки
+  for (int i=0;i<tabs.size();i++) {
+    if (tabs[i].is_active) {
+      КУРСОР_ВВЕРХ(1);
+      std::cout << "\033[4m\033[48;2;205;205;205m\033[30m" << tabs[i].title << "\033[0m" << std::flush;
+    } else {
+      КУРСОР_ВВЕРХ(1);
+      std::cout << "\033[4m" << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << tabs[i].title << "\033[0m" << "\033[0m" << std::flush;
+    }
+  }
+};
+
 void APP::page_draw() {
-  std::cout << "\033[H"; // перенести курсор в верхний левый угол
+  CURSOR_TO(2, 1);
   std::cout << "\033[48;2;111;111;111m" << page << "\033[0m" << std::flush; page.clear();
 };

@@ -23,4 +23,5 @@
 #define КУРСОР_ВВЕРХ(n)    std::cout << "\033[" << n << "A" << std::flush
 #define КУРСОР_ВНИЗ(n)    std::cout << "\033[" << n << "B" << std::flush
 #define КУРСОР_НА(row, col) std::cout << "\033[" << row << ";" << col << "H" << std::flush
+#define CURSOR_TO(row, col) std::cout << "\033[" << row << ";" << col << "H" << std::flush
 
