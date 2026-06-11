@@ -1,3 +1,51 @@
+// std::cout << "\033[4m" << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << "\u2717" << "\033[0m" << std::flush;
+// #define m_ "\033[4m"
+// #define mx "\u2717"
+// screen = screen + "\033[38;2;0;180;210;48;2;0;18;210m \033[0m";
+// fflush(stdout);
+// std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
+// std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
+// if (tab_active) {
+//   std::cout << m_ << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << mx << "\033[0m" << std::flush;
+// } else {
+//   std::cout << m_ << "\033[48;2;255;255;255m" << "\033[30m" << width_tab << mx << "\033[0m" << std::flush;
+// }
+// ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА
+// // считаем ширину таба
+// auto size_width_tab = [&]() -> int {
+//   int available = (int)(percent(90, WIDTH_TERMINAL)); // 90% ширины на все табы
+//   int tab_width = available / tab_count;              // делим поровну
+//   int max_tab_width = (int)percent(15, WIDTH_TERMINAL); // максимум одного таба
+//   return std::min(tab_width, max_tab_width);          // берём меньшее
+// };
+// // ложим туда символы
+// std::string width_tab(size_width_tab(), '0');
+//
+//
+// if (KEY('t')) {
+//   tab_count++;
+//   tab_focus = tab_count;
+// }
+// if (KEY('w') && tab_count > 1) {
+//   tab_count--;
+//   if (tab_focus >= tab_count) tab_focus = tab_count; // не выходим за границу
+// }
+// for (int i = 1; i < tab_count+1; i++) {
+//   if (i == tab_focus) {
+//     // Активная вкладка — белая
+//     std::cout << "\033[4m\033[48;2;205;205;205m\033[30m" << width_tab << "\u2717\033[0m" << std::flush;
+//   } else {
+//     // Неактивная вкладка — чёрная
+//     std::cout << "\033[4m\033[48;2;50;50;50m\033[38;2;255;255;255m" << width_tab << "\u2717\033[0m" << std::flush;
+//   }
+// }
+//
+// КУРСОР_НА(HEIGHT_TERMINAL, 1);
+// std::cout << size_width_tab() << std::flush;
+//
+// monitor.clear();
+// usleep(1000000 / 30);
+
 
   bool tab_active = false;
   while (1) {
