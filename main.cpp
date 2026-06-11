@@ -3,8 +3,11 @@
 int main(){
     APP app;
     
-    app.browserInTerminal();
-    // app.AI();
+    while (true) {
+      app.logica();
+      app.draw();
+      usleep(1000000 / 30);
+    }
 
     return 0;
 }

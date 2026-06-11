@@ -25,20 +25,34 @@
 #include <csignal>
 #include <cstdlib>
 
+#include "define.h"
 
 
-
-
-
-
-void keyboard(bool enable);
 class APP {
   public:
-    int browserInTerminal();
-    void AI();
+    void keyboard(bool enable);
+    // void signalHandler(int signum);
+    void logica();
+    void draw();
   private:
-    #define p printf
-    #define dbl double
+    int WIDTH_TERMINAL=terminal_size_WIDTH();
+    int HEIGHT_TERMINAL=terminal_size_HEIGHT();
+    int terminal_size_WIDTH();
+    int terminal_size_HEIGHT();
+    struct Tab {
+      std::string title = "Новая вкладка"; // Значение по умолчанию
+      std::string url = "";
+      bool is_active;
+      bool is_loading;
+    };
+    std::vector<Tab> tabs;
+    std::string monitor = monitor_L();
+    std::string page = page_L();
+    std::string monitor_L();
+    std::string page_L();
+    void monitor_draw();
+    void page_draw();
 };
 
-
+extern APP* g_app_instance;
+void signalHandler(int signum);

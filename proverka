@@ -1,0 +1,3 @@
+#!/bin/bash
+# pidof app
+htop -p $(pidof app firefox | tr ' ' ',')
