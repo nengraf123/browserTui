@@ -24,4 +24,9 @@
 #include <curl/curl.h>
 #include <functional>
 #include <regex>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <vector>
+#include <sstream>
 

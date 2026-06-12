@@ -1,6 +1,7 @@
 #include "APP.h"
 
 APP::APP() {
+  // keyboard(true); // включение ввода с клавиатуры
   tabs.push_back({"duck duck go", "lite.duckduckgo.com", true, false});
 };
 
@@ -19,7 +20,7 @@ std::string APP::monitor_L(){
   return monitor;
 };
 std::string APP::page_size_L(){
-  int page_size = ((HEIGHT_TERMINAL-1) * WIDTH_TERMINAL); 
+  int page_size = ((HEIGHT_TERMINAL/*-1*/) * WIDTH_TERMINAL); 
   std::string page(page_size, ' ');
   return page;
 };
