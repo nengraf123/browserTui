@@ -1,5 +1,4 @@
-#include "APP.h"
-#include <iostream>
+// #include "APP.h"
 
 // #define ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_ТЕРМИНАЛА printf("\033[H");
 // #define ПЕРЕВОДИМ_КУРСОР_К_НАЧАЛУ_СТРОЧКИ printf("\033[G");

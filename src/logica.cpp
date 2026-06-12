@@ -9,7 +9,8 @@ void APP::logica() {
   WIDTH_TERMINAL=terminal_size_WIDTH();
   HEIGHT_TERMINAL=terminal_size_HEIGHT();
   monitor = monitor_L();
-  page = page_L();
+  page = page_size_L();
+  page_L();
 };
 
 std::string APP::monitor_L(){
@@ -17,7 +18,7 @@ std::string APP::monitor_L(){
   std::string monitor(monitor_size, ' ');
   return monitor;
 };
-std::string APP::page_L(){
+std::string APP::page_size_L(){
   int page_size = ((HEIGHT_TERMINAL-1) * WIDTH_TERMINAL); 
   std::string page(page_size, ' ');
   return page;
@@ -92,7 +93,4 @@ void APP::tab_draw() {
   }
 };
 
-void APP::page_draw() {
-  CURSOR_TO(2, 1);
-  std::cout << "\033[48;2;111;111;111m" << page << "\033[0m" << std::flush; page.clear();
-};
+

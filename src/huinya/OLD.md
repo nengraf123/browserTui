@@ -1,3 +1,8 @@
+  // убераем все что в скобках
+  html = std::regex_replace(html, std::regex(R"(<svg[\s\S]*?</svg>)"), "");
+
+
+
 // std::cout << "\033[4m" << "\033[48;2;0;0;0m" << "\033[38;2;255;255;255m" << width_tab << "\u2717" << "\033[0m" << std::flush;
 // #define m_ "\033[4m"
 // #define mx "\u2717"
