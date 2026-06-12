@@ -78,37 +78,62 @@ std::string APP::html_parcer(std::string url) {
 // };
 
 void APP::page_L() {
-
-  // 1. Универсальная лямбда: принимает строку HTML и ТЕГ, который ищем
-  auto find_and_react = [&](const std::string& text, std::string_view tag) {
-    // Собираем открывающий тег (например, "<center")
-    // Ищем без закрывающей ">", чтобы находить теги с атрибутами, например <div class="bg">
-    std::string target = "<" + std::string(tag);
-    size_t pos = text.find(target);
-
-    while (pos != std::string::npos) {
-      
-      // 2. Описываем реакцию под каждый конкретный тег
-      if (tag == "center") {
-        page.replace(page.size() / 2, 5, "HELLO");
-      } 
-      else if (tag == "a") {
-
-      } 
-      else if (tag == "div") {
-          // Твоя логика для блоков
-      }
-
-      // Ищем следующее вхождение этого же тега
-      pos = text.find(target, pos + target.length());
-    }
-  };
-
-  // 3. ПРОСТО ВЫЗЫВАЕШЬ ДЛЯ ВСЕХ НУЖНЫХ ТЕГОВ ПО ОЧЕРЕДИ:
-  find_and_react(dom, "center");
-  find_and_react(dom, "a");
-  find_and_react(dom, "div");
-  find_and_react(dom, "img");
+  huinya = dom;
+  // size_t render_pos = 0;
+  // std::istringstream stream(dom);
+  // std::string line;
+  // std::vector<int> center_stack;
+  //
+  // while (std::getline(stream, line)) {
+  //   size_t first = line.find_first_not_of(" ");
+  //   if (first == std::string::npos) continue;
+  //   int depth = first / 2;
+  //   std::string token = line.substr(first);
+  //
+  //   while (!center_stack.empty() && depth <= center_stack.back())
+  //     center_stack.pop_back();
+  //   bool centering = !center_stack.empty();
+  //
+  //   // вспомогательная лямбда: положить текст с учётом центрирования
+  //   auto put_text = [&](const std::string& text) {
+  //     size_t pos = render_pos;
+  //     if (centering) {
+  //       size_t line_start = (render_pos / WIDTH_TERMINAL) * WIDTH_TERMINAL;
+  //       size_t offset = (text.size() < (size_t)WIDTH_TERMINAL)
+  //                       ? (WIDTH_TERMINAL - text.size()) / 2 : 0;
+  //       pos = line_start + offset;
+  //     }
+  //     if (pos + text.size() <= page.size())
+  //       page.replace(pos, text.size(), text);
+  //     render_pos = pos + text.size();
+  //   };
+  //
+  //   if (token.rfind("<center", 0) == 0) {
+  //     center_stack.push_back(depth);
+  //   }
+  //   else if (token.rfind("<br", 0) == 0) {
+  //     render_pos = ((render_pos / WIDTH_TERMINAL) + 1) * WIDTH_TERMINAL;
+  //   }
+  //   else if (token.rfind("TEXT:", 0) == 0) {
+  //     put_text(token.substr(6));
+  //   }
+  //   else if (token.rfind("<a", 0) == 0) {
+  //     // ссылка — текст внутри будет дальше как TEXT:, просто помечаем стиль
+  //     // (можно дописать ANSI-подсветку перед текстом, если нужно)
+  //   }
+  //   else if (token.rfind("<img", 0) == 0) {
+  //     put_text("[IMG]");
+  //   }
+  //   else if (token.rfind("<input", 0) == 0) {
+  //     put_text("[______]");
+  //   }
+  //   else if (token.rfind("<span", 0) == 0 ||
+  //            token.rfind("<form", 0) == 0 ||
+  //            token.rfind("<p", 0) == 0) {
+  //     // контейнеры — сами по себе ничего не рисуют,
+  //     // их содержимое отрисуется через TEXT:/вложенные теги
+  //   }
+  // }
 }
 
 

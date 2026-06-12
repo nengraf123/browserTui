@@ -37,6 +37,7 @@ class APP {
     std::string page_parcer(std::string url);
     std::string html_parcer(std::string url);
     std::string dom = html_parcer("https://lite.duckduckgo.com");
+    size_t render_pos = 0;
 
 
 };
